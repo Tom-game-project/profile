@@ -1,18 +1,9 @@
 :root {
-    /* === LIMBOカラーパレット（明るさ調整版） === */
-    /* 背景のベースを少し明るくして、真っ黒による「見えない」を防ぐ */
+    /* === LIMBOカラーパレット === */
     --bg-dark: #111111;
-    
-    /* 霧の色：光が当たっているような明るいグレーに */
     --bg-fog: #888888; 
-    
-    /* 手前のシルエット（完全な黒） */
     --fg-solid: #000000;
-    
-    /* 文字：はっきりした白 */
     --text-main: #ffffff;
-    
-    /* サブ文字：読みやすいシルバーグレー */
     --text-dim: #bbbbbb; 
 }
 
@@ -23,30 +14,56 @@ body, html {
     height: 100%;
     color: var(--text-main);
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--bg-dark);
-    opacity: 0.8;
+
+    background-color: transparent; 
+
     line-height: 1.6;
 }
 
-/* === 背景レイヤー（明るい霧のグラデーション） === */
+/* === 背景レイヤー === */
 #scene {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    /* z-indexはそのまま、シルエットより後ろ */
     z-index: -1;
     overflow: hidden;
-    /* 上（暗闇）から 下（明るい霧）へのグラデーション */
-    /* 以前より下部を大幅に明るくし、逆光感を演出 */
-    background: linear-gradient(to bottom, 
-        #0d0d0d 0%, 
-        #2a2a2a 40%, 
-        #666666 80%, 
-        #999999 100%);
+
+    /* 最背面のベースカラー */
+    background-color: #000;
+
+    /* 複数のグラデーションを重ねて奥行きを表現 */
+    background-image: 
+        /* 【レイヤー1：手前の霧】
+           既存のグラデーションをベースに、rgba()を使って透明度(アルファ値)を設定。
+           下に行くほど透明度を上げて、奥のレイヤーを透けさせます。
+        */
+        linear-gradient(to bottom, 
+            rgba(13, 13, 13, 0.9) 0%,   /* 上はほぼ不透明な暗闇 */
+            rgba(42, 42, 42, 0.7) 40%,  /* 中間は半透明の霧 */
+            rgba(102, 102, 102, 0.4) 80%, /* 下はかなり透明になり光を通す */
+            rgba(153, 153, 153, 0.1) 100%),
+            
+        /* 【レイヤー2：奥の洞窟】
+           画面中央から広がる放射状(radial)グラデーション。
+           中央がぼんやりと明るく、周囲が闇に沈む表現で洞窟の出口感を演出。
+        */
+        radial-gradient(ellipse at center, 
+            #333333 0%,   /* 中央のわずかな光 */
+            #1a1a1a 40%,  /* 岩肌の暗がり */
+            #000000 100%); /* 周囲の完全な闇 */
+            
+    /* レイヤーの合成モード（オプション）
+       multiply（乗算）や overlay（オーバーレイ）などを試すと雰囲気が変わります。
+       今回は自然な重なりを表現するため、標準設定のままとしています。
+       興味があればコメントアウトを外して試してみてください。
+    background-blend-mode: overlay;
+    */
 }
 
-/* === フィルムノイズ（視認性を邪魔しない程度に調整） === */
+/* === フィルムノイズ === */
 .noise-overlay {
     position: fixed;
     top: 0;
@@ -55,11 +72,11 @@ body, html {
     height: 100%;
     z-index: 100;
     pointer-events: none;
-    opacity: 0.05; /* 少し薄くしました */
+    opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* === ヴィネット（少し弱めて視界を確保） === */
+/* === ヴィネット === */
 .vignette {
     position: fixed;
     top: 0;
@@ -68,20 +85,20 @@ body, html {
     height: 100%;
     z-index: 90;
     pointer-events: none;
-    /* 透明度を下げて、端が見えなくなるのを防ぐ */
-    background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+    /* 洞窟感を強めるため、周囲の闇を少し濃く、範囲を広げました */
+    background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 100%);
 }
 
-/* === 地面のシルエット（変更なし） === */
+/* === 地面のシルエット === */
 .ground-silhouette {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 25vh;
+    min-height: 250px;
     fill: var(--fg-solid);
     z-index: 10;
-    /* 逆光で境界をぼかす */
     filter: blur(1px); 
 }
 
@@ -90,23 +107,27 @@ body, html {
     position: relative;
     z-index: 50;
     max-width: 700px;
-    margin: 15vh auto;
+    margin: 15vh auto 40vh auto;
     padding: 0 2rem;
 }
 
 .con-block {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
+    
+    padding: 1.5rem;
+    border-radius: 8px;
+    
+    /*backdrop-filter: blur(3px);*/
 }
 
 h2 {
     font-size: 2rem;
     font-weight: bold;
     letter-spacing: 0.2rem;
-    border-bottom: 1px solid rgba(255,255,255,0.3); /* 線の透明度調整 */
+    border-bottom: 1px solid rgba(255,255,255,0.3);
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
     color: #fff;
-    /* 文字が発光しているような演出 */
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
@@ -153,11 +174,44 @@ a:hover {
 .fingerprint {
     font-family: 'Courier New', monospace;
     font-size: 0.85rem;
-    color: #ccc; /* より明るく */
-    background: rgba(0, 0, 0, 0.6); /* 背景を少し透けさせる */
+    color: #ccc;
+    background: rgba(0, 0, 0, 0.6);
     padding: 1rem;
     border: 1px solid rgba(255,255,255,0.2);
     display: inline-block;
     letter-spacing: 0.05rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    word-break: break-all;
+}
+
+/* === 電灯の点滅アニメーション === */
+.flicker-light {
+    /* 光の滲みを2重にして強化（中心の強い光 + 周囲のぼんやりした光） */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1))
+            drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+
+    /* アニメーション設定: 4秒で1周、無限ループ */
+    animation: flicker-anim 4s infinite step-end;
+}
+
+/* 不規則な点滅パターン */
+@keyframes flicker-anim {
+    0%   { opacity: 1; }
+    3%   { opacity: 0.1; } /* 一瞬消える */
+    6%   { opacity: 1; }
+    7%   { opacity: 0.1; }
+    8%   { opacity: 1; }
+    9%   { opacity: 1; }
+    10%  { opacity: 0.1; } /* パチパチする */
+    11%  { opacity: 1; }
+
+    40%  { opacity: 1; }
+    42%  { opacity: 0.4; } /* 薄暗くなる */
+    43%  { opacity: 1; }
+
+    70%  { opacity: 1; }
+    72%  { opacity: 0.1; }
+    75%  { opacity: 1; }
+
+    100% { opacity: 1; }
 }

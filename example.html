@@ -14,15 +14,45 @@
     <div id="scene">
         <div style="position:absolute; bottom:0; width:100%; height:50%; background:linear-gradient(to top, #222 0%, transparent 100%);"></div>
         
-        <svg class="ground-silhouette" viewBox="0 0 1000 200" preserveAspectRatio="none">
+        <svg class="ground-silhouette" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMax slice" overflow="visible">
+
+            <defs>
+                <linearGradient id="light-beam-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#fff" stop-opacity="0.4" />
+                    <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+                </linearGradient>
+            </defs>
+
             <path d="M0,200 L0,50 C200,60 400,40 600,55 S900,30 1000,60 L1000,200 Z" />
-            
-            <g transform="translate(100, 50) scale(0.5)">
-                <path d="M10,0 L15,-80 L5,-120 M15,-80 L25,-110" stroke="black" stroke-width="4" fill="none"/>
-            </g>
-            <g transform="translate(850, 40) scale(0.7)">
-                <path d="M10,0 L5,-100 L-10,-140 M5,-100 L20,-130" stroke="black" stroke-width="3" fill="none"/>
-            </g>
+
+            <svg style="display:none;">
+                <symbol id="pole-symbol" viewBox="0 0 100 500" overflow="visible">
+                    <rect x="45" y="0" width="10" height="500" />
+                    <rect x="20" y="50" width="60" height="6" />
+                    <rect x="25" y="75" width="50" height="6" />
+
+                    <path d="M25,60 L45,60 L40,56 L30,56 Z" fill="black" />
+
+                    <path class="flicker-light"
+                      d="M35,63 L-100,600 L170,600 Z"
+                      fill="url(#light-beam-grad)"
+                      style="filter: blur(8px);"/>
+
+                    <circle class="flicker-light" cx="35" cy="63" r="4" fill="#ffffee" />
+                </symbol>
+            </svg>
+
+            <svg class="utility-pole pole-1" 
+                 viewBox="0 0 100 500" 
+                 preserveAspectRatio="xMidYMax meet"
+                 x="600" 
+                 y="-80" 
+                 width="50" 
+                 height="150"
+                 overflow="visible"
+            > 
+                <use href="#pole-symbol"/>
+            </svg>
         </svg>
     </div>
 
@@ -31,7 +61,7 @@
         <div class="con-block">
             <h2>Bio</h2>
             <p style="margin-bottom: 2rem; color: #aaa;">
-                Minimalist explorer in the fog.
+                Programmer in the fog.
             </p>
 
             <h3>Interests</h3>
