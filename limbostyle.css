@@ -1,0 +1,163 @@
+:root {
+    /* === LIMBOカラーパレット（明るさ調整版） === */
+    /* 背景のベースを少し明るくして、真っ黒による「見えない」を防ぐ */
+    --bg-dark: #111111;
+    
+    /* 霧の色：光が当たっているような明るいグレーに */
+    --bg-fog: #888888; 
+    
+    /* 手前のシルエット（完全な黒） */
+    --fg-solid: #000000;
+    
+    /* 文字：はっきりした白 */
+    --text-main: #ffffff;
+    
+    /* サブ文字：読みやすいシルバーグレー */
+    --text-dim: #bbbbbb; 
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--text-main);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-dark);
+    opacity: 0.8;
+    line-height: 1.6;
+}
+
+/* === 背景レイヤー（明るい霧のグラデーション） === */
+#scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    /* 上（暗闇）から 下（明るい霧）へのグラデーション */
+    /* 以前より下部を大幅に明るくし、逆光感を演出 */
+    background: linear-gradient(to bottom, 
+        #0d0d0d 0%, 
+        #2a2a2a 40%, 
+        #666666 80%, 
+        #999999 100%);
+}
+
+/* === フィルムノイズ（視認性を邪魔しない程度に調整） === */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.05; /* 少し薄くしました */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* === ヴィネット（少し弱めて視界を確保） === */
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 90;
+    pointer-events: none;
+    /* 透明度を下げて、端が見えなくなるのを防ぐ */
+    background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+}
+
+/* === 地面のシルエット（変更なし） === */
+.ground-silhouette {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 25vh;
+    fill: var(--fg-solid);
+    z-index: 10;
+    /* 逆光で境界をぼかす */
+    filter: blur(1px); 
+}
+
+/* === コンテンツエリア === */
+.content-wrapper {
+    position: relative;
+    z-index: 50;
+    max-width: 700px;
+    margin: 15vh auto;
+    padding: 0 2rem;
+}
+
+.con-block {
+    margin-bottom: 4rem;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.3); /* 線の透明度調整 */
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    /* 文字が発光しているような演出 */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+h3 {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    margin-top: 1.5rem;
+    font-weight: normal;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 0.8rem;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+    color: var(--text-main);
+}
+
+li:hover {
+    border-left-color: #fff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
+    padding-left: 1.5rem;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent);
+}
+
+a {
+    color: var(--text-main);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--text-dim);
+    transition: 0.3s;
+}
+
+a:hover {
+    color: #fff;
+    border-bottom: 1px solid #fff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+
+.fingerprint {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #ccc; /* より明るく */
+    background: rgba(0, 0, 0, 0.6); /* 背景を少し透けさせる */
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: inline-block;
+    letter-spacing: 0.05rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}

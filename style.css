@@ -1,0 +1,61 @@
+
+.con-block-type-a {
+    border-bottom: solid gray;
+    color: white;
+    margin: 1rem;
+}
+
+:root {
+    /* === カラーパレット（INSIDE風：寒色の夜明け） === */
+
+    /* 上空：宇宙に近い、漆黒の青 */
+    --color-sky-top: #05080a;
+
+    /* 中間：霧がかった青緑（スレートブルー） */
+    --color-sky-mid: #1d2b36;
+
+    /* 地平線：冷たい光（彩度を落とした水色） */
+    --color-sky-horizon: #6b8c9e;
+
+    /* 霧：全体を馴染ませるグレー */
+    --color-fog: #2f3d45;
+}
+
+/* === 背景グラデーション === */
+.bg-sky {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* 寒色系のグラデーションに変更 */
+    background: linear-gradient(to bottom,
+        var(--color-sky-top) 0%,
+        var(--color-sky-mid) 40%,
+        var(--color-sky-horizon) 80%,
+        #c3d6e0 100%); /* 最後は凍えるような白い光 */
+}
+
+/* === 地平線の光 === */
+.horizon-light {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 60%;
+    /* 赤みを消し、青白い光に変更 */
+    background: radial-gradient(ellipse at bottom right,
+        rgba(180, 220, 255, 0.4) 0%,
+        transparent 70%);
+    pointer-events: none;
+}
+#scene {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+    overflow: hidden;
+    filter: contrast(120%) brightness(90%) saturate(40%);
+    z-index: -1;
+}
